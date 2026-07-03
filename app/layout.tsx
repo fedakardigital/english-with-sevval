@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Poppins } from "next/font/google";
 import "./globals.css";
 // TranslationWidget bileşenini buraya import ediyoruz
-import TranslationWidget from './components/TranslationWidget'; 
-
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
