@@ -1,8 +1,8 @@
 import { getRequestConfig } from 'next-intl/server';
 
 export default getRequestConfig(async ({ locale }) => {
-  // Dil koduna göre messages klasöründen JSON dosyasını import eder
   return {
+    locale, // İşte bu satır eksik olduğu için hata veriyordu!
     messages: (await import(`./messages/${locale}.json`)).default
   };
 });

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Poppins } from "next/font/google";
 import "./globals.css";
-// TranslationWidget bileşenini buraya import ediyoruz
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -26,10 +26,6 @@ export default function RootLayout({
   return (
     <html lang="tr" className={`${geistSans.variable} ${modernFont.variable} h-full antialiased`}>
       <body className={`min-h-full flex flex-col font-sans ${modernFont.className}`}>
-        
-        {/* Çeviri butonunu buraya ekledik */}
-        
-        
         {children}
       </body>
     </html>
