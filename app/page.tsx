@@ -34,83 +34,97 @@ const MusicPlayer = () => {
   );
 };
 
-const Navbar = ({ onHakkimdaClick, onBlogClick, onDerslerClick, onKurslarClick, onMailClick }: { onHakkimdaClick: () => void, onBlogClick: () => void, onDerslerClick: () => void, onKurslarClick: () => void, onMailClick: () => void }) => {
-  const [showIletisim, setShowIletisim] = useState(false);
-  const [showIletisimBilgi, setShowIletisimBilgi] = useState(false);
+const Navbar = ({ onHakkimdaClick, onBlogClick, onDerslerClick, onKurslarClick, onMailClick }: any) => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showIletisimDropdown, setShowIletisimDropdown] = useState(false); // Dropdown için state
 
   return (
-    <header className="flex flex-col">
-      <div className="bg-pink-200 text-black text-sm py-2 px-12 flex justify-between items-center animate-pulse overflow-hidden">
-        <div className="flex gap-6 font-medium animate-marquee whitespace-nowrap">
-          <span className="flex items-center gap-2">✉️ sevvalakkoc3@gmail.com</span>
-          <span className="flex items-center gap-2">📍 Online Ders – Her yerden katıl!</span>
-        </div>
+    <header className="flex flex-col relative z-[100]">
+      <div className="bg-pink-200 text-black text-xs py-2 px-6 md:px-12 flex justify-between items-center animate-pulse overflow-hidden">
+        <span className="truncate">✉️ sevvalakkoc3@gmail.com | 📍 Online Ders – Her yerden katıl!</span>
       </div>
       
-      <nav className="flex justify-between items-center py-6 px-12 bg-[#FFF9FB] border-b border-pink-100 relative">
-        <div className="flex items-center gap-3">
-          <span className="text-4xl animate-bounce">🧸</span>
-          <div className="text-3xl font-bold text-pink-400 font-hand">English with Şevval</div>
+      <nav className="flex justify-between items-center py-4 px-6 md:px-12 bg-[#FFF9FB] border-b border-pink-100">
+        <div className="flex items-center gap-2">
+          <span className="text-2xl animate-bounce">🧸</span>
+          <div className="text-xl md:text-3xl font-bold text-pink-400 font-hand">English with Şevval</div>
         </div>
-        
-        <div className="hidden md:flex space-x-8 text-gray-700 font-bold">
-          <a href="#" className="hover:text-pink-400 transition">Ana Sayfa</a>
-          <button onClick={onDerslerClick} className="hover:text-pink-400 transition">Dersler</button>
-          <button onClick={onKurslarClick} className="hover:text-pink-400 transition">Kurslar</button>
-          
-          <div className="relative">
-            <button onClick={() => setShowIletisimBilgi(!showIletisimBilgi)} className="hover:text-pink-400 transition">İletişim</button>
-            {showIletisimBilgi && (
-              <div className="absolute top-10 -left-10 w-64 bg-white p-6 rounded-3xl shadow-2xl border border-pink-100 z-50 animate-in fade-in zoom-in">
-                <h3 className="text-pink-400 font-bold mb-4 text-center">İletişim Bilgileri</h3>
-                <div className="space-y-3 text-sm text-gray-700">
-                  <p><strong>Mail :</strong> sevvalakkoc3@gmail.com</p>
-                  <p><strong>İnstagram :</strong> sevvalkocs</p>
-                </div>
-              </div>
-            )}
-          </div>
 
-          <button onClick={onHakkimdaClick} className="hover:text-pink-400 transition underline-offset-8 decoration-pink-300">Hakkımda</button>
-          <button onClick={onBlogClick} className="hover:text-pink-400 transition underline-offset-8 decoration-pink-300">Blog</button>
-        </div>
-        
-        <div className="relative">
-          <button onClick={() => setShowIletisim(!showIletisim)} className="bg-pink-400 text-white px-8 py-3 rounded-xl shadow-md hover:bg-pink-500 transition font-semibold">İletişime Geç ❤️</button>
-          {showIletisim && (
-            <div className="absolute top-16 right-0 w-64 bg-white border-2 border-pink-400 rounded-3xl p-4 shadow-2xl z-50 animate-in fade-in zoom-in">
-              <div className="absolute -top-3 right-10 w-4 h-4 bg-white border-t-2 border-l-2 border-pink-400 rotate-45"></div>
-              <div className="space-y-3">
-                <a href="https://www.instagram.com/sevvalkocs" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-xl border border-pink-100 hover:bg-pink-50 text-pink-500 font-bold"><span>❤️</span> Instagram</a>
-                <button onClick={() => { setShowIletisim(false); onMailClick(); }} className="flex items-center gap-3 p-3 rounded-xl border border-pink-100 hover:bg-pink-50 text-pink-500 font-bold w-full"><span>❤️</span> Mail</button>
-              </div>
+        <div className="flex items-center gap-3 relative">
+          {/* Dropdown içeren İletişim Butonu */}
+          <button 
+            onClick={() => setShowIletisimDropdown(!showIletisimDropdown)} 
+            className="bg-pink-400 text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-pink-500 transition"
+          >
+            İletişim ❤️
+          </button>
+          
+          {showIletisimDropdown && (
+            <div className="absolute top-12 right-0 w-48 bg-white border-2 border-pink-400 rounded-3xl p-4 shadow-2xl z-[110]">
+              <a href="https://www.instagram.com/sevvalkocs" target="_blank" rel="noopener noreferrer" className="block p-2 text-pink-500 font-bold hover:bg-pink-50 rounded-lg">❤️ Instagram</a>
+              <button onClick={() => { setShowIletisimDropdown(false); onMailClick(); }} className="block w-full p-2 text-pink-500 font-bold hover:bg-pink-50 rounded-lg text-left">❤️ Mail</button>
             </div>
           )}
+
+          <button 
+            className="md:hidden text-3xl text-pink-400 z-[110] relative" 
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? '✕' : '☰'}
+          </button>
+        </div>
+
+        <div className={`${mobileMenuOpen ? 'flex flex-col absolute top-full left-0 w-full bg-white p-6 shadow-2xl border-b border-pink-100 z-[105]' : 'hidden'} md:flex md:static md:flex-row space-y-4 md:space-y-0 md:space-x-8 text-gray-700 font-bold items-center`}>
+          <a href="#" className="hover:text-pink-400 transition" onClick={() => setMobileMenuOpen(false)}>Ana Sayfa</a>
+          <button onClick={() => { onDerslerClick(); setMobileMenuOpen(false); }}>Dersler</button>
+          <button onClick={() => { onKurslarClick(); setMobileMenuOpen(false); }}>Kurslar</button>
+          <button onClick={() => { onHakkimdaClick(); setMobileMenuOpen(false); }}>Hakkımda</button>
+          <button onClick={() => { onBlogClick(); setMobileMenuOpen(false); }}>Blog</button>
         </div>
       </nav>
     </header>
   );
 };
+const Hero = ({ onDerslerClick, onRulesClick }: any) => {
+  const [showCard, setShowCard] = useState(false);
 
-const Hero = ({ onDerslerClick, onRulesClick }: { onDerslerClick: () => void, onRulesClick: () => void }) => (
-  <section className="flex flex-col md:flex-row items-center justify-between px-12 py-16 gap-10 z-10 relative">
-    <div className="md:w-1/2 space-y-6">
-      <h1 className="text-5xl md:text-6xl font-extrabold text-gray-800 leading-tight">İngilizce öğrenmek artık çok daha <span className="text-pink-400 font-hand">eğlenceli!</span></h1>
-      <p className="text-lg text-gray-600">Sana özel, eğlenceli ve etkili online İngilizce dersleriyle hedeflerine birlikte ulaşalım! ❤️</p>
-      <div className="flex gap-4">
-        <button onClick={onDerslerClick} className="bg-pink-400 text-white px-8 py-3 rounded-full font-semibold hover:bg-pink-500 transition-all hover:scale-105 active:scale-95 shadow-lg">Derslerimi İncele ❤️</button>
-        <button onClick={onRulesClick} className="bg-white text-pink-400 border-2 border-pink-400 px-6 py-3 rounded-full font-semibold hover:bg-pink-50 transition-all hover:scale-105 active:scale-95 shadow-md">Rules</button>
+  return (
+    <section className="flex flex-col-reverse md:flex-row items-center justify-between px-6 md:px-12 py-10 md:py-16 gap-8 z-10 relative">
+      <div className="w-full md:w-1/2 space-y-6 text-center md:text-left">
+        <h1 className="text-4xl md:text-6xl font-extrabold text-gray-800 leading-tight">
+          İngilizce öğrenmek artık çok daha <span className="text-pink-400 font-hand">eğlenceli!</span>
+        </h1>
+        <p className="text-base md:text-lg text-gray-600">Sana özel, eğlenceli ve etkili online İngilizce dersleriyle hedeflerine birlikte ulaşalım! ❤️</p>
+        
+        {/* Kapsayıcıya relative verdik, absolute olan kart bunun içinde kalacak */}
+        <div className="flex flex-col gap-3 w-full max-w-[280px] mx-auto md:flex-row md:w-auto md:mx-0 relative">
+          <button onClick={onDerslerClick} className="bg-pink-400 text-white px-6 py-3 rounded-full font-semibold hover:bg-pink-500 shadow-lg w-full">Derslerimi İncele ❤️</button>
+          <button onClick={onRulesClick} className="bg-white text-pink-400 border-2 border-pink-400 px-6 py-3 rounded-full font-semibold hover:bg-pink-50 shadow-md w-full">Rules</button>
+          
+          <button onClick={() => setShowCard(!showCard)} className="bg-pink-400 text-white px-6 py-3 rounded-full font-semibold hover:bg-pink-500 shadow-lg w-full">Bilgi Al ❤️</button>
+          
+          {showCard && (
+            <div className="absolute top-full mt-3 left-0 md:left-auto md:right-0 w-64 bg-white p-6 rounded-3xl shadow-2xl border-2 border-pink-100 z-[70] animate-in fade-in zoom-in">
+              <h3 className="text-pink-400 font-bold mb-3 text-center border-b border-pink-50 pb-2">İletişim Bilgileri</h3>
+              <div className="space-y-2 text-sm text-gray-700">
+                <p><strong>Mail:</strong> sevvalakkoc3@gmail.com</p>
+                <p><strong>İnstagram:</strong> sevvalkocs</p>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
-    <div className="md:w-1/2 flex justify-center">
-      <div className="relative bg-white p-4 rounded-3xl shadow-xl rotate-2 border border-gray-100">
-        <div className="w-80 h-96 relative overflow-hidden rounded-2xl"><Image src="/svvl.png" alt="Şevval Hoca" fill className="object-cover" /></div>
-        <div className="absolute -top-6 -right-6 bg-pink-100 p-4 rounded-full shadow-lg border border-pink-200 text-pink-500 font-bold rotate-12 font-hand">Let's learn <br /> together! ❤️</div>
-        <div className="absolute -bottom-10 -right-10 w-28 h-28 z-20"><Image src="/bear.png" alt="Ayıcık" width={112} height={112} /></div>
+      
+      <div className="w-full md:w-1/2 flex justify-center">
+        <div className="relative bg-white p-4 rounded-3xl shadow-xl rotate-2 border border-gray-100 scale-90 md:scale-100">
+          <div className="w-64 h-80 md:w-80 md:h-96 relative overflow-hidden rounded-2xl">
+            <Image src="/svvl.png" alt="Şevval Hoca" fill className="object-cover" />
+          </div>
+        </div>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 const Courses = () => {
   const courseList = [
@@ -180,6 +194,7 @@ export default function Home() {
       <Hero 
         onDerslerClick={() => setShowDersler(true)} 
         onRulesClick={() => setShowRules(true)} 
+        onIletisimClick={() => setModal("iletisim")}
       />
       <Courses />
       <Testimonials />
