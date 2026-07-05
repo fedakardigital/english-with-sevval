@@ -21,7 +21,6 @@ const MusicPlayer = () => {
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3">
-      {/* Çeviri ikonu zıplamalı */}
       <button 
         onClick={() => setShowTranslator(!showTranslator)} 
         className="bg-white text-pink-500 p-4 rounded-full shadow-lg hover:scale-110 transition border border-pink-200 animate-bounce"
@@ -37,7 +36,6 @@ const MusicPlayer = () => {
         </div>
       )}
       <audio ref={audioRef} src="/music.mp3" loop />
-      {/* Müzik ikonu zıplamalı */}
       <button onClick={toggleMusic} className="bg-pink-400 text-white p-4 rounded-full shadow-lg hover:scale-110 transition animate-bounce">{isPlaying ? "🎶" : "🎵"}</button>
     </div>
   );
@@ -46,11 +44,46 @@ const MusicPlayer = () => {
 const Navbar = ({ onHakkimdaClick, onBlogClick, onDerslerClick, onKurslarClick, onMailClick }: any) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showIletisimDropdown, setShowIletisimDropdown] = useState(false);
+  const [showMailForm, setShowMailForm] = useState(false);
+  const [status, setStatus] = useState("");
+  const formRef = useRef<HTMLFormElement>(null);
 
   return (
     <header className="flex flex-col relative z-[100]">
+      {showMailForm && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4 animate-in fade-in">
+          <div className="bg-white p-8 rounded-3xl shadow-2xl max-w-md w-full relative animate-in zoom-in duration-300">
+            <button onClick={() => setShowMailForm(false)} className="absolute top-4 right-4 text-gray-400 hover:text-pink-400">
+              <X size={28} />
+            </button>
+            <h2 className="text-2xl font-bold text-pink-400 mb-6 font-hand">Bana Ulaşın ❤️</h2>
+            <form 
+              ref={formRef}
+              className="space-y-4"
+              onSubmit={async (e) => {
+                e.preventDefault(); 
+                setStatus("Gönderiliyor...");
+                const formData = new FormData(e.currentTarget);
+                await fetch("https://script.google.com/macros/s/AKfycbzR90CVxtPZJ0q9BTgfu65-4rDXp_ibDypmE0RNRclXqdkStXpSTqcu1aySKqs6fws/exec", {
+                  method: "POST",
+                  body: formData,
+                });
+                setStatus("Mesajın bize ulaştı, teşekkürler! ✨"); 
+                formRef.current?.reset(); 
+                setTimeout(() => setStatus(""), 4000);
+              }}
+            >
+              <input type="email" name="email" placeholder="Mail" maxLength={250} className="w-full p-3 rounded-xl border border-pink-100 placeholder-pink-400 text-pink-600" required />
+              <textarea name="message" placeholder="Mesajın" maxLength={250} className="w-full p-3 rounded-xl border border-pink-100 h-32 placeholder-pink-400 text-pink-600" required />
+              {status && <div className="text-center text-sm font-medium text-pink-500 animate-pulse">{status}</div>}
+              <button type="submit" className="w-full py-3 bg-pink-400 text-white font-bold rounded-xl hover:bg-pink-500 transition">Gönder</button>
+            </form>
+          </div>
+        </div>
+      )}
+
       <div className="bg-pink-200 text-black text-xs py-2 px-6 md:px-12 flex justify-between items-center animate-pulse overflow-hidden">
-        <span className="truncate">✉️ sevvalakkoc3@gmail.com | 📍 Online Ders – Her yerden katıl!</span>
+        <span className="truncate">✉️ sevvalakkoc3@gmail.com | 📍 Online Ders – <a href="https://meet.google.com/landing?pli=1" target="_blank" rel="noopener noreferrer" className="underline hover:text-pink-600 transition">Google Meet</a></span>
       </div>
       
       <nav className="flex justify-between items-center py-4 px-6 md:px-12 bg-[#FFF9FB] border-b border-pink-100">
@@ -58,28 +91,22 @@ const Navbar = ({ onHakkimdaClick, onBlogClick, onDerslerClick, onKurslarClick, 
           <span className="text-2xl animate-bounce">🧸</span>
           <div className="text-xl md:text-3xl font-bold text-pink-400 font-hand">English with Şevval</div>
         </div>
-
         <div className="flex items-center gap-3 relative">
           <button onClick={() => setShowIletisimDropdown(!showIletisimDropdown)} className="bg-pink-400 text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-pink-500 transition">İletişim ❤️</button>
-          
           {showIletisimDropdown && (
             <div className="absolute top-12 right-0 w-48 bg-white border-2 border-pink-400 rounded-3xl p-4 shadow-2xl z-[110]">
               <a href="https://www.instagram.com/sevvalkocs" target="_blank" rel="noopener noreferrer" className="block p-2 text-pink-500 font-bold hover:bg-pink-50 rounded-lg">❤️ Instagram</a>
-              <button onClick={() => { setShowIletisimDropdown(false); onMailClick(); }} className="block w-full p-2 text-pink-500 font-bold hover:bg-pink-50 rounded-lg text-left">❤️ Mail</button>
+              <button onClick={() => { setShowIletisimDropdown(false); setShowMailForm(true); }} className="block w-full p-2 text-pink-500 font-bold hover:bg-pink-50 rounded-lg text-left">❤️ Mail</button>
             </div>
           )}
-
-          <button className="md:hidden text-3xl text-pink-400 z-[110] relative" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-            {mobileMenuOpen ? '✕' : '☰'}
-          </button>
+          <button className="md:hidden text-3xl text-pink-400 z-[110] relative" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>{mobileMenuOpen ? '✕' : '☰'}</button>
         </div>
-
         <div className={`${mobileMenuOpen ? 'flex flex-col absolute top-full left-0 w-full bg-white p-6 shadow-2xl border-b border-pink-100 z-[105]' : 'hidden'} md:flex md:static md:flex-row space-y-4 md:space-y-0 md:space-x-8 text-gray-700 font-bold items-center`}>
           <a href="#" className="hover:text-pink-400 transition" onClick={() => setMobileMenuOpen(false)}>Ana Sayfa</a>
           <button onClick={() => { onDerslerClick(); setMobileMenuOpen(false); }}>Dersler</button>
           <button onClick={() => { onKurslarClick(); setMobileMenuOpen(false); }}>Kurslar</button>
           <button onClick={() => { onHakkimdaClick(); setMobileMenuOpen(false); }}>Hakkımda</button>
-          <button onClick={() => { onBlogClick(); setMobileMenuOpen(false); }}>Blog</button>
+          <button onClick={() => { onBlogClick(); setMobileMenuOpen(false); }}>Ders İşleyişi?</button>
         </div>
       </nav>
     </header>
@@ -91,9 +118,7 @@ const Hero = ({ onDerslerClick, onRulesClick }: any) => {
   return (
     <section className="flex flex-col-reverse md:flex-row items-center justify-between px-6 md:px-12 py-10 md:py-16 gap-8 z-10 relative">
       <div className="w-full md:w-1/2 space-y-6 text-center md:text-left">
-        <h1 className="text-4xl md:text-6xl font-extrabold text-gray-800 leading-tight">
-          İngilizce öğrenmek artık çok daha <span className="text-pink-400 font-hand">eğlenceli!</span>
-        </h1>
+        <h1 className="text-4xl md:text-6xl font-extrabold text-gray-800 leading-tight">İngilizce öğrenmek artık çok daha <span className="text-pink-400 font-hand">eğlenceli!</span></h1>
         <p className="text-base md:text-lg text-gray-600">Sana özel, eğlenceli ve etkili online İngilizce dersleriyle hedeflerine birlikte ulaşalım! ❤️</p>
         <div className="flex flex-col gap-3 w-full max-w-[280px] mx-auto md:flex-row md:w-auto md:mx-0 relative">
           <button onClick={onDerslerClick} className="bg-pink-400 text-white px-6 py-3 rounded-full font-semibold hover:bg-pink-500 shadow-lg w-full">Derslerimi İncele ❤️</button>
@@ -110,18 +135,13 @@ const Hero = ({ onDerslerClick, onRulesClick }: any) => {
           )}
         </div>
       </div>
-      
       <div className="w-full md:w-1/2 flex justify-center">
         <div className="relative bg-white p-4 rounded-3xl shadow-xl rotate-2 border border-gray-100 scale-90 md:scale-100">
-          <div className="absolute -top-12 -right-8 bg-pink-100 p-4 rounded-full shadow-lg z-20 text-pink-500 font-bold rotate-2 animate-bounce">
-            Let's learn together! ❤️
-          </div>
+          <div className="absolute -top-12 -right-8 bg-pink-100 p-4 rounded-full shadow-lg z-20 text-pink-500 font-bold rotate-2 animate-bounce">Let's learn together! ❤️</div>
           <div className="w-64 h-80 md:w-80 md:h-96 relative overflow-hidden rounded-2xl">
             <Image src="/svvl.png" alt="Şevval Hoca" fill className="object-cover" />
           </div>
-          <div className="absolute -bottom-10 -left-10 z-20">
-            <span className="text-6xl">🧸</span>
-          </div>
+          <div className="absolute -bottom-10 -left-10 z-20"><span className="text-6xl">🧸</span></div>
         </div>
       </div>
     </section>
@@ -129,12 +149,7 @@ const Hero = ({ onDerslerClick, onRulesClick }: any) => {
 };
 
 const Courses = () => {
-  const courseList = [
-    { title: "Kişiye Özel Dersler", desc: "Seviyene ve ihtiyacına uygun özel programlar.", emoji: "❤️" },
-    { title: "Etkili & Eğlenceli", desc: "Oyunlar, aktiviteler ve modern içeriklerle öğrenme.", emoji: "📖" },
-    { title: "Konuşma Odaklı", desc: "Bol konuşma pratiği ile özgüven kazan!", emoji: "🐻" },
-    { title: "Online & Esnek", desc: "Dilediğin yerden, dilediğin zaman katıl.", emoji: "💻" },
-  ];
+  const courseList = [{ title: "Kişiye Özel Dersler", desc: "Seviyene ve ihtiyacına uygun özel programlar.", emoji: "❤️" }, { title: "Etkili & Eğlenceli", desc: "Oyunlar, aktiviteler ve modern içeriklerle öğrenme.", emoji: "📖" }, { title: "Konuşma Odaklı", desc: "Bol konuşma pratiği ile özgüven kazan!", emoji: "🐻" }, { title: "Online & Esnek", desc: "Dilediğin yerden, dilediğin zaman katıl.", emoji: "💻" }];
   return (
     <section className="py-20 px-12 bg-white relative">
       <div className="flex flex-col md:flex-row justify-center items-center gap-8 md:gap-0">
@@ -186,20 +201,10 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#ffffff] relative overflow-hidden">
       <HeartDoodle className="top-5 left-5 rotate-12 scale-75" /><HeartDoodle className="top-32 right-10 -rotate-12" />
-      <Navbar
-        onHakkimdaClick={() => setShowHakkimda(true)}
-        onBlogClick={() => setShowBlog(true)}
-        onDerslerClick={() => setShowDersler(true)}
-        onKurslarClick={() => setShowKurslar(true)}
-        onMailClick={() => setShowMailForm(true)}
-      />
-      <Hero 
-        onDerslerClick={() => setShowDersler(true)} 
-        onRulesClick={() => setShowRules(true)} 
-      />
+      <Navbar onHakkimdaClick={() => setShowHakkimda(true)} onBlogClick={() => setShowBlog(true)} onDerslerClick={() => setShowDersler(true)} onKurslarClick={() => setShowKurslar(true)} onMailClick={() => setShowMailForm(true)} />
+      <Hero onDerslerClick={() => setShowDersler(true)} onRulesClick={() => setShowRules(true)} />
       <Courses />
       <Testimonials />
-      
       {showRules && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4 animate-in fade-in">
           <div className="bg-white p-8 rounded-3xl shadow-2xl max-w-2xl w-full relative animate-in zoom-in duration-300 overflow-y-auto max-h-[80vh]">
@@ -219,27 +224,55 @@ export default function Home() {
           </div>
         </div>
       )}
-
       {showHakkimda && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4 animate-in fade-in">
           <div className="bg-white p-8 rounded-3xl shadow-2xl max-w-lg w-full relative animate-in zoom-in duration-300">
             <button onClick={() => setShowHakkimda(false)} className="absolute top-4 right-4 text-gray-400 hover:text-pink-400 text-2xl"><X size={28}/></button>
             <h2 className="text-3xl font-bold text-pink-400 mb-4 font-hand">Hakkımda</h2>
-            <p className="text-gray-600">Tutkulu bir İngilizce eğitmeniyim. Seninle birlikte bu dili en eğlenceli ve etkili şekilde öğrenmek için buradayım! ❤️</p>
+            <p className="text-gray-600">İngilizce Mütercim ve Tercümanlık mezunuyum. Yaklaşık 4 yıldır aktif olarak İngilizce öğretmenliği yapıyorum. İşimi gerçekten severek yapıyor ve derslerimi disiplinli ama aynı zamanda keyifli bir şekilde işlemeye özen gösteriyorum. Her öğrencinin öğrenme şeklinin farklı olduğuna inanıyorum. Bu yüzden derslerimi öğrencinin seviyesine ve ihtiyaçlarına göre planlıyorum. Amacım sadece gramer öğretmek değil, öğrencilerimin İngilizceyi rahatça anlayıp konuşabilecekleri bir seviyeye gelmelerine yardımcı olmak.</p>
           </div>
         </div>
       )}
-
-      {showBlog && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4 animate-in fade-in">
-          <div className="bg-white p-8 rounded-3xl shadow-2xl max-w-lg w-full relative animate-in zoom-in duration-300">
-            <button onClick={() => setShowBlog(false)} className="absolute top-4 right-4 text-gray-400 hover:text-pink-400 text-2xl"><X size={28}/></button>
-            <h2 className="text-3xl font-bold text-pink-400 mb-4 font-hand">Blog Yazıları</h2>
-            <p className="text-gray-600">Henüz yeni bir blog yazısı eklenmedi! Yakında burada harika içerikler olacak. ❤️</p>
-          </div>
+{showBlog && (
+  <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4 animate-in fade-in">
+    <div className="bg-white p-8 rounded-3xl shadow-2xl max-w-lg w-full relative animate-in zoom-in duration-300 overflow-y-auto max-h-[80vh]">
+      <button 
+        onClick={() => setShowBlog(false)} 
+        className="absolute top-4 right-4 text-gray-400 hover:text-pink-400 text-2xl"
+      >
+        <X size={28}/>
+      </button>
+      
+      <h2 className="text-3xl font-bold text-pink-400 mb-6 font-hand">Ders İşleyişi?</h2>
+      
+      <div className="space-y-6 text-gray-600 text-sm">
+        {/* Başlangıç Seviyesi */}
+        <div>
+          <h3 className="font-bold text-gray-800 mb-2">Başlangıç Seviyesi (A1–A2) Dersleri</h3>
+          <ul className="list-disc ml-5 space-y-1">
+            <li>Dersler 50 dakika sürer ve Google Meet üzerinden online yapılır.</li>
+            <li>Günlük hayatta kullanılan temel kelime ve kalıplar öğretilir.</li>
+            <li>Kısa sürede kendinizi tanıtabilecek ve basit konuşmalar yapabilecek seviyeye gelmeniz hedeflenir.</li>
+            <li>Her ders sonunda PDF notları paylaşılır ve düzenli geri bildirim sağlanır.</li>
+          </ul>
         </div>
-      )}
 
+        {/* B1 ve Üzeri */}
+        <div>
+          <h3 className="font-bold text-gray-800 mb-2">B1 ve Üzeri Speaking Dersleri</h3>
+          <ul className="list-disc ml-5 space-y-1">
+            <li>Ders süresi 50 dakikadır (Google Meet).</li>
+            <li>Her derste farklı bir konu üzerinden speaking pratiği yapılır.</li>
+            <li>Yapılan hatalar ve yeni kelimeler not alınır.</li>
+            <li>Akıcılık, telaffuz ve kelime kullanımı üzerine çalışılır.</li>
+            <li>Ders sonunda PDF notları paylaşılır ve düzenli geri bildirim verilir.</li>
+            <li>Amaç, öğrencinin daha akıcı ve özgüvenli konuşabilmesidir.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
       {showKurslar && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4 animate-in fade-in">
           <div className="bg-white p-8 rounded-3xl shadow-2xl max-w-lg w-full relative animate-in zoom-in duration-300">
@@ -249,49 +282,38 @@ export default function Home() {
           </div>
         </div>
       )}
-
       {showDersler && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4 animate-in fade-in">
-          <button 
-            onClick={() => setShowDersler(false)} 
-            className="fixed top-5 right-5 z-[101] text-white hover:text-pink-300 bg-black/30 p-2 rounded-full"
-          >
-            <X size={40} />
-          </button>
-
-          <div className="bg-white p-8 rounded-3xl shadow-2xl max-w-4xl w-full relative animate-in zoom-in duration-300 overflow-y-auto max-h-[80vh]">
-            <h2 className="text-3xl font-bold text-pink-400 mb-8 font-hand text-center">Ders Seçenekleri</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {[
-                { title: "VIP Ders", fiyatlar: ["1 Ders (60 dk): 1.000 ₺", "Aylık Paket (8 Ders): 6.000 ₺"], link: "https://ig.me/m/sevvalkocs" },
-                { title: "Grup Dersleri (2 Kişi)", fiyatlar: ["1 Ders (Kişi Başı / Seans): 800 ₺", "Aylık Paket: 4.500 ₺"], link: "https://ig.me/m/sevvalkocs" },
-                { title: "Grup Dersleri (3 Kişi)", fiyatlar: ["1 Ders (Kişi Başı / Seans): 700 ₺", "Aylık Paket: 4.000 ₺"], link: "https://ig.me/m/sevvalkocs" },
-              ].map((ders, i) => (
-                <a key={i} href={ders.link} target="_blank" rel="noopener noreferrer" className="p-6 rounded-2xl bg-pink-50 border border-pink-100 hover:border-pink-300 transition-all cursor-pointer hover:shadow-lg group block text-center">
-                  <span className="text-4xl mb-3 block group-hover:scale-110 transition-transform">🧸</span>
-                  <h3 className="text-lg font-bold text-gray-800">{ders.title}</h3>
-                  <div className="text-sm text-gray-600 mt-2 space-y-1">{ders.fiyatlar.map((f, j) => (<p key={j} className="bg-white p-1 rounded shadow-sm">{f}</p>))}</div>
-                </a>
-              ))}
-              
-              <a href="https://ig.me/m/sevvalkocs" target="_blank" className="p-6 rounded-2xl bg-pink-100 border border-pink-200 hover:border-pink-300 transition-all cursor-pointer hover:shadow-lg group block text-center flex flex-col justify-center">
-                <span className="text-4xl mb-3 block group-hover:scale-110 transition-transform">✨</span>
-                <h3 className="text-lg font-bold text-gray-800">Şevval Koç</h3>
-                <p className="text-sm text-gray-600 mt-2">Detaylı bilgi ve soruların için bana buradan ulaşabilirsin!</p>
-                <span className="mt-4 text-pink-500 font-bold underline">Mesaj Gönder</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      )}
-      
+  <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4 animate-in fade-in">
+    <button onClick={() => setShowDersler(false)} className="fixed top-5 right-5 z-[101] text-white hover:text-pink-300 bg-black/30 p-2 rounded-full"><X size={40} /></button>
+    <div className="bg-white p-8 rounded-3xl shadow-2xl max-w-4xl w-full relative animate-in zoom-in duration-300 overflow-y-auto max-h-[80vh]">
+      <h2 className="text-3xl font-bold text-pink-400 mb-8 font-hand text-center">Ders Seçenekleri</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Mevcut Ders Kartları */}
+        {[{ title: "VIP Ders", fiyatlar: ["1 Ders (50 dk): 1.500 ₺", "Aylık Paket (8 Ders): 6.500 ₺"], link: "https://ig.me/m/sevvalkocs" }, { title: "Grup Dersleri (2 Kişi)", fiyatlar: ["1 Ders (Kişi Başı / Seans): 850 ₺", "Aylık Paket: 5.000 ₺"], link: "https://ig.me/m/sevvalkocs" }, { title: "Grup Dersleri (3 Kişi)", fiyatlar: ["1 Ders (Kişi Başı / Seans): 750 ₺", "Aylık Paket: 4.000 ₺"], link: "https://ig.me/m/sevvalkocs" }].map((ders, i) => (
+          <a key={i} href={ders.link} target="_blank" rel="noopener noreferrer" className="p-6 rounded-2xl bg-pink-50 border border-pink-100 hover:border-pink-300 transition-all cursor-pointer hover:shadow-lg group block text-center">
+            <span className="text-4xl mb-3 block">🧸</span>
+            <h3 className="text-lg font-bold text-gray-800">{ders.title}</h3>
+            <div className="text-sm text-gray-600 mt-2 space-y-1">{ders.fiyatlar.map((f, j) => (<p key={j} className="bg-white p-1 rounded shadow-sm">{f}</p>))}</div>
+          </a>
+        ))}
+        
+        {/* EKLENEN KART */}
+        <button 
+          onClick={() => { setShowDersler(false); setShowMailForm(true); }} 
+          className="p-6 rounded-2xl bg-pink-100 border border-pink-200 hover:border-pink-300 transition-all cursor-pointer hover:shadow-lg group block text-center flex flex-col items-center justify-center"
+        >
+          <span className="text-4xl mb-3 block group-hover:scale-110 transition-transform">✨</span>
+          <h3 className="text-lg font-bold text-gray-800">Şevval Koç</h3>
+          <p className="text-sm text-gray-600 mt-2">Detaylı bilgi ve soruların için bana buradan ulaşabilirsin!</p>
+          <span className="mt-4 text-pink-500 font-bold underline">Mesaj Gönder</span>
+        </button>
+      </div>
+    </div>
+  </div>
+)}
       <footer className="py-12 border-t border-pink-100 flex flex-col items-center gap-6">
         <div className="inline-block animate-pulse text-2xl font-bold text-pink-400 font-hand tracking-widest">ŞEVVAL KOÇ</div>
-        <div className="flex gap-6 text-gray-500 font-semibold">
-          <a href="https://www.instagram.com/sevvalkocs" target="_blank" rel="noopener noreferrer" className="hover:text-pink-400 transition">Instagram</a>
-          <a href="https://www.tiktok.com/@pastelkadins" target="_blank" rel="noopener noreferrer" className="hover:text-pink-400 transition">TikTok</a>
-          <a href="https://www.youtube.com/@sevvalkocs" target="_blank" rel="noopener noreferrer" className="hover:text-pink-400 transition">YouTube</a>
-        </div>
+        <div className="flex gap-6 text-gray-500 font-semibold"><a href="https://www.instagram.com/sevvalkocs" target="_blank" rel="noopener noreferrer" className="hover:text-pink-400 transition">Instagram</a><a href="https://www.tiktok.com/@pastelkadins" target="_blank" rel="noopener noreferrer" className="hover:text-pink-400 transition">TikTok</a><a href="https://www.youtube.com/@sevvalkocs" target="_blank" rel="noopener noreferrer" className="hover:text-pink-400 transition">YouTube</a></div>
         <p className="text-sm text-gray-400">© 2026 Tüm Hakları Saklıdır.</p>
       </footer>
       <MusicPlayer />
